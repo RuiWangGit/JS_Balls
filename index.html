@@ -16,14 +16,19 @@
 	<svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
 
 	<script>
-	function Circle(cx, cy, html_id)
+	function Circle(cx, cy, r,html_id)
 	{
 		var html_id = html_id;
-		this.info = { cx: cx,  cy: cy };
+		this.info = { cx: cx,  cy: cy, r: r, id:html_id };
 		
 		//private function that generates a random number
 		var randomNumberBetween = function(min, max){
 			return Math.random()*(max-min) + min;
+		}
+
+		function getColor(){
+			var color = Math.floor(Math.random()*255 +1);
+			return color;
 		}
 
 		this.initialize = function(){
@@ -37,13 +42,16 @@
 			var circle = makeSVG('circle', 
 				{ 	cx: this.info.cx,
 				  	cy: this.info.cy,
-				  	r:  10,
+				  	r:  this.info.r,
 				  	id: html_id,
-				  	style: "fill: black"
+				  	style: "fill: rgb("+getColor()+","+getColor()+","+getColor()+")" 
 				});
-
+			// console.log("======");
 			document.getElementById('svg').appendChild(circle);
 		}
+
+		
+		
 
 		this.update = function(time){
 			var el = document.getElementById(html_id);
@@ -71,7 +79,9 @@
 	        for (var k in attrs)
 	        {
 	            el.setAttribute(k, attrs[k]);
+
 	        }
+	        // console.log(el);
 	        return el;
 	    }
 
@@ -85,28 +95,93 @@
 
 		//a loop that updates the circle's position on the screen
 		this.loop = function(){
+			// console.log("lop is starting");
 			for(circle in circles)
 			{
 				circles[circle].update(1);
 			}
 		}
 
-		this.createNewCircle = function(x,y){
-			var new_circle = new Circle(x,y,counter++);
-			circles.push(new_circle);
+		this.createNewCircle = function(x,y,r){
+			var new_circle = new Circle(x,y,r,counter++);
+			return new_circle;
+			//circles.push(new_circle);
 			// console.log('created a new circle!', new_circle);
 		}
 
+		this.releaseNewCircle = function (cir){
+			circles.push(cir);
+		}
+
+
+
 		//create one circle when the game starts
-		this.createNewCircle(document.body.clientWidth/2, document.body.clientHeight/2);
+		// this.createNewCircle(document.body.clientWidth/2, document.body.clientHeight/2, 15);
 	}
 
 	var playground = new PlayGround();
-	setInterval(playground.loop, 15);
+	setInterval(playground.loop, 30);
 
-	document.onclick = function(e) {
-		playground.createNewCircle(e.x,e.y);
+	// document.onclick = function(e) {
+	// 	// playground.createNewCircle(e.x,e.y,20);
+
+	// 	new_circle = playground.createNewCircle(e.x,e.y, 10);
+
+	// 	// if (time_release===undefined && time_pressed !==undefined ){
+	// 		// setInterval( circles[circle].update_radius(new_circle, time_pressed), 15)  ;
+	// 		//return;
+	// 	// }
+	// 	// if ( time_release !== undefined ){
+	// 	// 	playground.releaseNewCircle(new_circle);
+	// 	// 	return;
+	// 	// }
+
+
+	// }
+
+
+	// var mousedown_time;
+	var new_circle;
+	var time_pressed;
+	var time_release;
+	var timer;
+
+	function getTime(){
+		var date = new Date();
+		return date.getTime();
 	}
+
+	document.onmousedown = function(e){
+		// mousedown_time = getTime();
+		new_circle = playground.createNewCircle(e.x,e.y, 10);
+		time_pressed = getTime();
+		timer = setInterval( loop1, 30) ;
+	}
+	document.onmouseup = function(e){
+		 time_release = getTime() - time_pressed;
+		 console.log('release: ', time_release);
+		clearInterval(timer);
+		playground.releaseNewCircle(new_circle);
+
+	}
+
+	var loop1 = function() {
+		// console.log("-------", time_pressed);
+		update_radius(new_circle, time_pressed);
+	}
+	function update_radius(new_cir, time_pressed){
+			// console.log("circle:", new_cir);
+	 	 	 // console.log("id:",new_cir.info.id);
+	 	 	// console.log(getTime() - time_pressed);
+			var new_cir_id = document.getElementById(new_cir.info.id);
+			//new_cir.info.r ++;
+			// console.log(new_cir_id);
+			new_cir_id.setAttribute("r", ++new_cir.info.r);
+			// console.log(new_cir.info.r);
+			
+		}
+
+
 	
 	</script>
 
