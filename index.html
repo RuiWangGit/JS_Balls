@@ -96,38 +96,50 @@
 		//a loop that updates the circle's position on the screen
 		this.loop = function(){
 			// console.log("lop is starting");
-			console.dir('hold',circles);
+			// console.log(circles);
 			for(circle in circles)
 			{
-				// var flag = 0;
+				var flag = 0;
 				for ( c2 in circles ) {
-					console.dir('circle object',circle);
-					console.dir('c2 object',c2);
-					console.log('circle', circle.info.r);
-					console.log('r', c2.info.r);
+					// console.log('circle object',circle);
+					// console.log('c2 object',c2);
+					// console.log('circle', circle.info.r);
+					// console.log('r', c2.info.r);
 
-					if ( (circle.info.r+c2.info.r)*(circle.info.r+c2.info.r)<= (
-					 (circle.info.cx-c2.info.cx)*(circle.info.cx-c2.info.cx) +  (circle.info.cy-c2.info.cy)*(circle.info.cy-c2.info.cy)) ) {
+					if (c2===circle ) continue;
+
+					if (   (circles[circle].info.r+circles[c2].info.r)*(circles[circle].info.r+circles[c2].info.r)<= (
+					 (circles[circle].info.cx-circles[c2].info.cx)*(circles[circle].info.cx-circles[c2].info.cx) +  (circles[circle].info.cy-circles[c2].info.cy)*(circles[circle].info.cy-circles[c2].info.cy))  ) {
 
 						continue;
 					}
 					else {
 						//collision happened
 						// circles[circle] = [];
+						 document.getElementById('svg').removeChild(document.getElementById( circles[circle].info.id ) );
+						 document.getElementById('svg').removeChild(document.getElementById( circles[c2].info.id) );
+						
 						delete circles[circle];
 						delete circles[c2];
-						document.getElementById('svg').removeChild(circle);
-						document.getElementById('svg').removeChild(c2);
+						// console.log(document.getElementById('svg'));
 						// flag = 1;
 						break;
 					}
 				}
 
-				// if ( flag === 1 ){
-				// 		//reset flag = 0;
-				// 		flag = 0;
-				// 		continue;
-				// }
+				// console.log('test');
+				// console.log(circles[circle]);
+				if ( flag === 1 ){
+						//reset flag = 0;
+						flag = 0;
+						continue;
+				}
+				else {
+					// console.log(circles[circle]);
+					circles[circle].update(1);
+				}
+			
+				// circles[circle].update(1);
 			}
 
 				
