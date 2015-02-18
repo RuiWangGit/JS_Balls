@@ -96,10 +96,42 @@
 		//a loop that updates the circle's position on the screen
 		this.loop = function(){
 			// console.log("lop is starting");
+			console.dir(circles);
 			for(circle in circles)
 			{
-				circles[circle].update(1);
+				// var flag = 0;
+				for ( c2 in circles ) {
+					console.dir('circle object',circle);
+					console.dir('c2 object',c2);
+					console.log('circle', circle.info.r);
+					console.log('r', c2.info.r);
+
+					if ( (circle.info.r+c2.info.r)*(circle.info.r+c2.info.r)<= (
+					 (circle.info.cx-c2.info.cx)*(circle.info.cx-c2.info.cx) +  (circle.info.cy-c2.info.cy)*(circle.info.cy-c2.info.cy)) ) {
+
+						continue;
+					}
+					else {
+						//collision happened
+						// circles[circle] = [];
+						delete circles[circle];
+						delete circles[c2];
+						document.getElementById('svg').removeChild(circle);
+						document.getElementById('svg').removeChild(c2);
+						// flag = 1;
+						break;
+					}
+				}
+
+				// if ( flag === 1 ){
+				// 		//reset flag = 0;
+				// 		flag = 0;
+				// 		continue;
+				// }
 			}
+
+				
+			
 		}
 
 		this.createNewCircle = function(x,y,r){
